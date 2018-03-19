@@ -1,0 +1,186 @@
+<div ng-controller="ReportCtrl as Report" class="protected-section data-list theme-white"
+     id="view-report">
+    <div id="main-content">
+        <div class="view-header">
+            <div class="actions">
+                <div class="heading-container">
+                    <h1 class="text-left">Items Report</h1>
+                    <button class="btn btn-link"  ng-click="clearAll()">Clear filters</button>
+                </div>
+                <div class="filters col-sm-12" style="padding-left:0px;padding-right: 0px;">
+                    <div class="filter">
+                        <div class="form-group ui-selector">
+                            <label>Printshop:</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control"
+                                       ng-model="filters.printshop"
+                                       placeholder="Search by name or email to select"
+                                       uib-typeahead="user as user.name for user in getPrintshops($viewValue)"
+                                       typeahead-loading="loadingUsers"
+                                       typeahead-no-results="noUsersFound"
+                                       typeahead-template-url="typeahead-res-user.tpl.html"
+                                       typeahead-show-hint="true"
+                                       typeahead-select-on-blur="true"
+                                       ng-change="onChangeUser()"
+                                       typeahead-on-select="onChangeUser()">
+                                <div class="fetching-results" ng-show="loadingUsers">
+                                    <div class="loading"><i class="fa fa-spinner fa-pulse fa-fw"></i> Searching...</div>
+                                </div>
+                                <div class="fetching-results" ng-show="noUsersFound && transaction.user">
+                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> No Users Found
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="filter-by-store" class="filter">
+                        <div class="form-group ui-selector">
+                            <label>Store User:</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control"
+                                       ng-model="filters.store"
+                                       placeholder="Search by name or email to select"
+                                       uib-typeahead="user as user.name for user in getStores($viewValue)"
+                                       typeahead-loading="loadingUsers"
+                                       typeahead-no-results="noUsersFound"
+                                       typeahead-template-url="typeahead-res-store.tpl.html"
+                                       typeahead-show-hint="true"
+                                       typeahead-select-on-blur="true"
+                                       typeahead-on-select="onChangeStoreUser()"
+                                       ng-change="onChangeSUser()"
+                                >
+                                <div class="fetching-results" ng-show="loadingUsers">
+                                    <div class="loading"><i class="fa fa-spinner fa-pulse fa-fw"></i> Searching...</div>
+                                </div>
+                                <div class="fetching-results" ng-show="noUsersFound && transaction.user">
+                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> No Users Found
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter" id="store" ng-show="showDropdownStore">
+                        <div class="form-group ui-selector">
+                            <label>Store:</label>
+                            <ui-select ng-model="filters.storeList" theme="bootstrap" title="Store">
+                                <ui-select-match allow-clear="true" placeholder="All">{{ $select.selected.name }}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="stores in storeList | filter: { name: $select.search }">
+                                    <span>{{ stores.name }}</span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="filters col-sm-12" style="padding-left:0px;padding-right: 0px;">
+                    <div class="filter">
+                        <div class="form-group ui-selector">
+                            <label>Type:</label>
+                            <ui-select ng-model="filters.typeDate" theme="bootstrap" title="Shipping Date">
+                                <ui-select-match allow-clear="true" placeholder="Shipping Date">{{ $select.selected.name }}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="types in typeDate | filter: { name: $select.search }">
+                                    <span>{{ types.name }}</span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div id="filter-by-date-start" class="filter">
+                        <div class="form-group">
+                            <label>Start:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       datetime-picker="MM/dd/yyyy"
+                                       ng-model="filters.fromDate"
+                                       is-open="calendars.from.isOpen"
+                                       enable-time="false"
+                                       datepicker-options="calendars.from.options"
+                                       close-on-date-selection="true"/>
+                                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'from')"><i
+                            class="fa fa-calendar"></i></button>
+                    </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="filter-by-date-end" class="filter">
+                        <div class="form-group">
+                            <label>End:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       datetime-picker="MM/dd/yyyy"
+                                       ng-model="filters.toDate"
+                                       is-open="calendars.to.isOpen"
+                                       enable-time="false"
+                                       datepicker-options="calendars.to.options"
+                                       close-on-date-selection="true"/>
+                                <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'to')"><i
+                                class="fa fa-calendar"></i></button>
+                        </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12" ng-init="status.isCustomHeaderOpen=true">
+            <uib-accordion-group is-open="status.isCustomHeaderOpen">
+                <uib-accordion-heading>
+                    <a href="#" ng-click="status.isCustomHeaderOpen=!status.isCustomHeaderOpen">Select Column</a> <i
+                        class="pull-right glyphicon"
+                        ng-class="{'glyphicon-chevron-down': status.isCustomHeaderOpen, 'glyphicon-chevron-right': !status.isCustomHeaderOpen}"
+                        ng-click="status.isCustomHeaderOpen=!status.isCustomHeaderOpen"></i>
+                </uib-accordion-heading>
+                <ul>
+                    <li class="col-md-12">
+                        <button class="btn btn-link" ng-click="selectAllFields()">Select All</button>&nbsp;|&nbsp;<button ng-click="clearAllFields()" class="btn btn-link">Clear All</button>
+                        <br/>
+                        <br/>
+                    </li>
+                    <li style="margin-bottom: 0.3em;"
+                        ng-repeat="field in fields track by $index"
+                        class="col-md-3">
+                        <div>
+                            <label class="col-sm-12" title="{{field.name}}">
+                                <input type="checkbox"
+                                       name="selectedFields[]"
+                                       value="{{field.code}}"
+                                       ng-model="field.selected"
+                                > {{field.name}}</label>
+                        </div>
+                    </li>
+                </ul>
+            </uib-accordion-group>
+            <br/>
+        </div>
+        <div class="col-sm-12">
+            <label>Preset:</label>
+            <ul class="list-inline">
+                <li>
+                    <a class="btn btn-link" style="text-align: left;" ng-click="presetZazzle()">Zazzle Weekly Report</a> (Note: Don't forget to select Zazzle Account user)
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-10">
+            <div class="btn-container form-group col-sm-2" style="padding-left: 0px;">
+                <button class="btn btn-block btn-primary" ng-click="onExport()">CSV EXPORT</button>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="panel panel-default" ng-show="showDownload">
+                <!--panel-danger-->
+                <div class="panel-body">
+                        <strong>Download</strong>
+                        <br/>
+                        Generated in {{createTime}} sec.
+                        <br/>
+                        <a href="{{donwloadUrl}}">{{donwloadUrl}}</a> {{sizeFile}} KB
+                </div>
+            </div>
+            <div class="alert alert-danger" ng-show="showErrorMsg">
+                <strong>Error!</strong> {{errorMsg | json }}
+            </div>
+        </div>
+    </div>
+</div>

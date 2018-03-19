@@ -1,0 +1,104 @@
+
+#view-report .view-header {
+    display: flex;
+    align-items: flex-start;
+    padding-right: 20px;
+}
+#view-report .view-header .actions {
+    flex: 1;
+    padding: 0 20px;
+}
+#view-report .view-header .actions .heading-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#view-report .view-header .actions .heading-container h1 {
+    padding-left: 0;
+}
+#view-report .view-header .actions .heading-container a {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#view-report .view-header .filters {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+#view-report .view-header .filters .filter {
+    flex: 1;
+}
+#view-report .view-header .filters .filter + .filter {
+    margin-left: 20px;
+}
+#view-report .view-header .filters .btn-container {
+    flex: 0;
+    margin-left: 20px;
+    padding: 0;
+}
+#view-report .view-header .filters .btn-container .btn {
+    padding-right: 30px;
+    padding-left: 30px;
+}
+#view-report .view-header .filters .filter-clear {
+    flex: 0 1 100%;
+    text-align: right;
+    font-weight: bold;
+}
+
+@media only screen and (max-width : 767px) {
+    #view-ledger-transactions-list .view-header {
+        display: block;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-right: 0;
+    }
+
+    #view-report .view-header .filters {
+        margin-bottom: 40px;
+    }
+
+    #view-report .view-header .filters .form-group {
+        margin-bottom: 10px;
+    }
+}
+@media only screen and (max-width : 992px) {
+    #view-report .view-header .actions .heading-container,
+    #view-report .view-header .actions .search {
+        display: block;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-right: 0;
+    }
+
+    #view-report .view-header .actions .search .search-by-name {
+        width: 100%;
+    }
+    #view-report .view-header .actions .heading-container,
+    #view-report .view-header .filters {
+        display: block;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #view-report .view-header .filters .filter,
+    #view-report .view-header .filters .btn-container {
+        margin-left: 0 !important;
+    }
+}
+
+#view-report #main-content .search-result {
+    padding-left:10px;
+    padding-right:10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+}
+#view-report #main-content .search-result:hover {
+    cursor: pointer;
+    color:#22a88e;
+}
